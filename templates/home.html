@@ -1,0 +1,79 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Upload Videos</title>
+</head>
+<style>
+    .toggle-switch {
+      display: flex;
+      margin-top: 50px;
+      margin-left: 30px;
+    }
+    
+    .toggle-switch input[type="radio"] {
+      display: none;
+    }
+    
+    .toggle-switch label {
+      cursor: pointer;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+    }
+    
+    .toggle-switch input[type="radio"]:checked + label {
+      background-color: #eee;
+    }
+    
+    #link-container, #videofile-container {
+      display: none;
+    }
+    
+    #link-container.active, #videofile-container.active {
+      display: block;
+    }
+</style>
+<body>
+
+<div class="toggle-switch">
+    <input type="radio" id="by-link" name="mode" value="link">
+    <label for="by-link">by link</label>
+
+    <input type="radio" id="by-videofile" name="mode" value="videofile">
+    <label for="by-videofile">by videofile</label>
+    
+</div>
+
+<div id="link-container">
+  <form method="post" enctype="multipart/form-data" method="POST" action={% url 'upload_youtube' %}>
+        {% csrf_token %}
+        {{ you_tube_form.as_p }}
+        <button type="submit">Upload</button>
+  </form>
+</div>
+
+<div id="videofile-container">
+    <form enctype="multipart/form-data" method="POST" action={% url 'upload_video' %}>
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Upload"/>
+    </form>
+</div>
+</body>
+
+<script>
+    const linkRadio = document.getElementById('by-link');
+    const videofileRadio = document.getElementById('by-videofile');
+    const linkContainer = document.getElementById('link-container');
+    const videofileContainer = document.getElementById('videofile-container');
+    
+    linkRadio.addEventListener('change', () => {
+      linkContainer.classList.add('active');
+      videofileContainer.classList.remove('active');
+    });
+    
+    videofileRadio.addEventListener('change', () => {
+      linkContainer.classList.remove('active');
+      videofileContainer.classList.add('active');
+    });
+</script>

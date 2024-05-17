@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Process video</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Task Status</h1>
+    <p id="status">Waiting for task to complete...</p>
+    <div id="video-container" style="display: none;">
+        <video id="result-video" width="320" height="240" controls>
+            <source id="video-source" src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <a href={% url 'home' %}>Back home</a>
+
+    <script>
+        $(document).ready(function() {
+            const videoContainer = document.getElementById('video-container');
+            const videoSource = document.getElementById('video-source');
+            function checkTaskStatus() {
+                $.ajax({
+                    url: "{% url 'get_task_status' task_id %}",
+                    success: function(data) {
+                        $('#status').text(data.task_status);
+                        if (data.task_status === 'SUCCESS') {
+                            videoSource.src = data.task_result;
+                            videoContainer.style.display = 'block';
+                            clearInterval(interval);
+                        }
+                    }
+                });
+            }
+
+            const interval = setInterval(checkTaskStatus, 1000);
+        });
+    </script>
+</body>
+</html>
+
+<script>
+
+</script>

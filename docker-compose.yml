@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    restart: always
+    command: ["web"]
+    volumes:
+      - .:/code
+    ports:
+      - "8080:8080"
+    links:
+      - queue
+    depends_on:
+      - queue
+
+  celery:
+    build: .
+    restart: always
+    command: ["celery"]
+    volumes:
+      - ./:/code
+    depends_on:
+      - web
+      - queue
+#
+  queue:
+    image: redis:6.2-alpine
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisqueue:/data
+
+volumes:
+  redisqueue:
